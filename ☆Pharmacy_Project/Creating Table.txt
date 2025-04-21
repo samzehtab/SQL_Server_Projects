@@ -1,0 +1,94 @@
+--Creating Database
+create database Pharmacy
+
+--Using Database
+use Pharmacy
+-------------------------------------------------------------------------------------------------
+--Creating Tables
+
+----Creating insurance table
+	create table insurance_tbl
+		(
+		insurance_id varchar(10) primary key,
+		insurance_name varchar(30) not null
+		)
+
+----Creating prescription table
+	create table prescription_tbl
+		(
+		prescription_id int primary key identity(1000,1),
+		prescription_name varchar(20) null,
+		prescription_family varchar(20) null,
+		prescription_date datetime not null,
+		insurance_id varchar(10),
+			constraint FK_insuranceprescription
+			foreign key (insurance_id)
+			references insurance_tbl(insurance_id)
+		)
+
+----Creating country table
+	create table country_tbl
+		(
+		country_id varchar(3) primary key,
+		country_name varchar(20) not null
+		)
+
+----Creating company table
+	create table company_tbl
+		(
+		company_id varchar(10) primary key,
+		company_name varchar(30) not null,
+		country_id varchar(3),
+			constraint FK_countrycompany
+			foreign key (country_id)
+			references country_tbl(country_id)
+		)
+
+----Creating drugtype table
+	create table drugtype_tbl
+		(
+		drugtype_id int primary key identity(1,1),
+		drugtype_name varchar(30) not null
+		)
+
+----Creating drug table
+	create table drug_tbl
+		(
+		drug_id int primary key identity(100,1),
+		drug_genericname varchar(50) not null,
+		drugtype_id int,
+			constraint FK_drugtypedrug
+			foreign key (drugtype_id)
+			references drugtype_tbl(drugtype_id)
+		)
+
+----Creating commercial table
+	create table commercial_tbl
+		(
+		commercial_id int primary key identity(300,1),
+		commercial_name varchar(50) null,
+		company_id varchar(10),
+			constraint FK_companycommercial
+			foreign key (company_id)
+			references company_tbl(company_id),
+		drug_id int,
+			constraint FK_drugcommercial
+			foreign key (drug_id)
+			references drug_tbl(drug_id),
+		commercial_price money not null
+		)
+
+----Creating order table
+	create table order_tbl
+		(
+		order_id int primary key identity(10000,1),
+		prescription_id int,
+			constraint FK_prescriptionorder
+			foreign key (prescription_id)
+			references prescription_tbl(prescription_id),
+		commercial_id int,
+			constraint FK_commercialorder
+			foreign key (commercial_id)
+			references commercial_tbl(commercial_id),
+		order_measure int not null
+		)

@@ -1,0 +1,146 @@
+
+INSERT INTO insurance_tbl (insurance_id, insurance_name) VALUES
+('INS001', 'TaminEjtemaei'),
+('INS002', 'Saman'),
+('INS003', 'NirouhayMosalah'),
+('INS004', 'Novin'),
+('INS005', 'Sina');
+
+
+-------------------
+
+
+-- Insert 134 prescriptions for 'TaminEjtemaei'
+INSERT INTO prescription_tbl (prescription_name, prescription_family, prescription_date, insurance_id)
+SELECT 
+    'PName' + CAST(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS VARCHAR),
+    'PFamily' + CAST(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS VARCHAR),
+    DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 1460, '2020-09-01'),
+    'INS001'
+FROM master.dbo.spt_values WHERE type='P' AND number BETWEEN 1 AND 134;
+
+-- Insert 66 prescriptions for other insurances (random)
+INSERT INTO prescription_tbl (prescription_name, prescription_family, prescription_date, insurance_id)
+SELECT 
+    'PName' + CAST(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS VARCHAR),
+    'PFamily' + CAST(ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS VARCHAR),
+    DATEADD(DAY, ABS(CHECKSUM(NEWID())) % 1460, '2020-09-01'),
+    (CASE WHEN number % 4 = 0 THEN 'INS002'
+          WHEN number % 4 = 1 THEN 'INS003'
+          WHEN number % 4 = 2 THEN 'INS004'
+          ELSE 'INS005' END)
+FROM master.dbo.spt_values WHERE type='P' AND number BETWEEN 1 AND 66;
+
+
+--------------------
+
+
+INSERT INTO country_tbl (country_id, country_name) VALUES
+('IRN', 'Iran'),
+('FRA', 'France'),
+('AUS', 'Australia'),
+('GER', 'Germany');
+
+
+-----------------------
+
+
+INSERT INTO company_tbl (company_id, company_name, country_id) VALUES
+('C001', 'DarouPakhsh', 'IRN'),
+('C002', 'SobhanDarou', 'IRN'),
+('C003', 'Osveh', 'IRN'),
+('C004', 'Exir', 'IRN'),
+('C005', 'Sanofi', 'FRA'),
+('C006', 'Servier', 'FRA'),
+('C007', 'Pierre Fabre', 'FRA'),
+('C008', 'Ipsen', 'FRA'),
+('C009', 'Boehringer', 'GER'),
+('C010', 'Bayer', 'GER'),
+('C011', 'Pfizer', 'AUS'),
+('C012', 'CSL Limited', 'AUS'),
+('C013', 'Novo Nordisk', 'AUS'),
+('C014', 'Roche', 'GER'),
+('C015', 'Aventis', 'FRA');
+
+
+---------------------
+
+
+INSERT INTO drugtype_tbl (drugtype_name) VALUES
+('Antibiotic'), ('Painkiller'), ('Antidepressant'), ('Antiviral'), ('Antifungal'),
+('Blood Pressure Regulator'), ('Diabetes Medication'), ('Cholesterol Lowering'),
+('Antihistamine'), ('Steroid'), ('Antiseptic'), ('Anticoagulant'),
+('Sedative'), ('Antiepileptic'), ('Hormonal Therapy'), ('Anti-inflammatory'),
+('Gastrointestinal Medication'), ('Neurological Drug'), ('Cardiovascular Drug'),
+('Oncology Drug'), ('Respiratory Drug'), ('Renal Drug'), ('Ophthalmic Drug'),
+('Dermatological Drug'), ('Psychotropic Drug'), ('Antipsychotic'),
+('Thyroid Medication'), ('Immunosuppressant'), ('Antirheumatic'), ('Anesthetic');
+
+
+
+-----------------------
+
+INSERT INTO drug_tbl (drug_genericname, drugtype_id) VALUES
+('Amoxicillin', 1), ('Ciprofloxacin', 1), ('Doxycycline', 1), ('Azithromycin', 1), ('Ceftriaxone', 1),
+('Ibuprofen', 2), ('Paracetamol', 2), ('Naproxen', 2), ('Ketorolac', 2), ('Aspirin', 2),
+('Fluoxetine', 3), ('Sertraline', 3), ('Citalopram', 3), ('Escitalopram', 3), ('Venlafaxine', 3),
+('Oseltamivir', 4), ('Acyclovir', 4), ('Remdesivir', 4), ('Ribavirin', 4), ('Baloxavir', 4),
+('Fluconazole', 5), ('Itraconazole', 5), ('Ketoconazole', 5), ('Voriconazole', 5), ('Clotrimazole', 5),
+('Metformin', 7), ('Glimepiride', 7), ('Sitagliptin', 7), ('Empagliflozin', 7), ('Insulin Lispro', 7),
+('Atorvastatin', 8), ('Rosuvastatin', 8), ('Simvastatin', 8), ('Lovastatin', 8), ('Pravastatin', 8),
+('Diphenhydramine', 9), ('Cetirizine', 9), ('Fexofenadine', 9), ('Loratadine', 9), ('Desloratadine', 9),
+('Prednisone', 10), ('Hydrocortisone', 10), ('Methylprednisolone', 10), ('Dexamethasone', 10), ('Triamcinolone', 10),
+('Warfarin', 11), ('Heparin', 11), ('Apixaban', 11), ('Rivaroxaban', 11), ('Dabigatran', 11),
+('Diazepam', 12), ('Lorazepam', 12), ('Alprazolam', 12), ('Clonazepam', 12), ('Midazolam', 12),
+('Carbamazepine', 13), ('Valproic Acid', 13), ('Levetiracetam', 13), ('Lamotrigine', 13), ('Topiramate', 13),
+('Levothyroxine', 26), ('Methimazole', 26), ('Propylthiouracil', 26), ('Liothyronine', 26), ('Desiccated Thyroid', 26);
+
+
+
+-----------------------
+
+
+INSERT INTO commercial_tbl (commercial_name, company_id, drug_id, commercial_price) VALUES
+('Augmentin', 'C001', 100, 15.99), ('Cipro', 'C002', 101, 12.50), ('Doryx', 'C003', 102, 20.75),
+('Zithromax', 'C004', 103, 25.99), ('Rocephin', 'C005', 104, 22.45), ('Advil', 'C006', 105, 9.50),
+('Tylenol', 'C007', 106, 10.99), ('Aleve', 'C008', 107, 8.75), ('Toradol', 'C009', 108, 14.50),
+('Bayer Aspirin', 'C010', 109, 7.20), ('Prozac', 'C011', 110, 25.75), ('Zoloft', 'C012', 111, 24.60),
+('Celexa', 'C013', 112, 19.99), ('Lexapro', 'C014', 113, 23.40), ('Effexor', 'C015', 114, 26.80),
+('Tamiflu', 'C001', 115, 30.99), ('Zovirax', 'C002', 116, 22.10), ('Veklury', 'C003', 117, 150.99),
+('Copegus', 'C004', 118, 35.50), ('Xofluza', 'C005', 119, 40.99), ('Diflucan', 'C006', 120, 18.45),
+('Sporanox', 'C007', 121, 21.99), ('Nizoral', 'C008', 122, 16.75), ('Vfend', 'C009', 123, 29.80),
+('Lotrimin', 'C010', 124, 12.40), ('Glucophage', 'C011', 125, 14.50), ('Amaryl', 'C012', 126, 11.80),
+('Januvia', 'C013', 127, 28.99), ('Jardiance', 'C014', 128, 32.50), ('Humalog', 'C015', 129, 35.99),
+('Lipitor', 'C001', 130, 22.80), ('Crestor', 'C002', 131, 26.99), ('Zocor', 'C003', 132, 18.50),
+('Mevacor', 'C004', 133, 15.99), ('Pravachol', 'C005', 134, 19.20), ('Benadryl', 'C006', 135, 12.99),
+('Zyrtec', 'C007', 136, 14.40), ('Allegra', 'C008', 137, 15.80), ('Claritin', 'C009', 138, 13.50),
+('Clarinex', 'C010', 139, 17.20), ('Prednisolone', 'C011', 140, 10.75), ('Cortef', 'C012', 141, 8.99),
+('Medrol', 'C013', 142, 13.50), ('Decadron', 'C014', 143, 9.99), ('Kenalog', 'C015', 144, 11.75),
+('Coumadin', 'C001', 145, 20.50), ('Fragmin', 'C002', 146, 21.99), ('Eliquis', 'C003', 147, 35.50),
+('Xarelto', 'C004', 148, 33.99), ('Pradaxa', 'C005', 149, 30.25), ('Valium', 'C006', 150, 16.20),
+('Ativan', 'C007', 151, 19.50), ('Xanax', 'C008', 152, 21.99), ('Klonopin', 'C009', 153, 18.50),
+('Versed', 'C010', 154, 22.40), ('Tegretol', 'C011', 155, 20.99), ('Depakene', 'C012', 156, 25.50),
+('Keppra', 'C013', 157, 28.80), ('Lamictal', 'C014', 158, 24.99), ('Topamax', 'C015', 159, 29.75),
+('Synthroid', 'C001', 160, 18.99), ('Tapazole', 'C002', 161, 15.49), ('PTU', 'C003', 162, 14.80),
+('Cytomel', 'C004', 163, 21.40), ('Armour Thyroid', 'C005', 164, 23.99), ('Methotrexate', 'C006', 165, 29.50),
+('Cyclosporine', 'C007', 166, 33.20), ('Azathioprine', 'C008', 167, 26.50), ('Mycophenolate', 'C009', 168, 40.60),
+('Enbrel', 'C010', 169, 55.30), ('Humira', 'C011', 170, 58.40), ('Remicade', 'C012', 171, 61.90),
+('Lidocaine', 'C013', 172, 12.99), ('Bupivacaine', 'C014', 173, 15.80), ('Ropivacaine', 'C015', 174, 17.40),
+('Propofol', 'C001', 175, 25.60), ('Etomidate', 'C002', 176, 22.30), ('Ketamine', 'C003', 177, 29.99),
+('Halothane', 'C004', 178, 33.99), ('Isoflurane', 'C005', 179, 27.99), ('Sevoflurane', 'C006', 180, 35.50),
+('Desflurane', 'C007', 181, 39.90), ('Opdivo', 'C008', 182, 72.50), ('Keytruda', 'C009', 183, 78.99),
+('Tecentriq', 'C010', 184, 85.99), ('Xalkori', 'C011', 185, 89.50), ('Zytiga', 'C012', 186, 95.20),
+('Ibrance', 'C013', 187, 98.30), ('Lynparza', 'C014', 188, 102.40), ('Tagrisso', 'C015', 189, 110.99);
+
+
+
+
+----------------------
+
+
+INSERT INTO order_tbl (prescription_id, commercial_id, order_measure)
+SELECT 
+    (1000 + ABS(CHECKSUM(NEWID())) % 200),
+    (300 + ABS(CHECKSUM(NEWID())) % 110),
+    (1 + ABS(CHECKSUM(NEWID())) % 5)
+FROM master.dbo.spt_values WHERE type='P' AND number BETWEEN 1 AND 320;
